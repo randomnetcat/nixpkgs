@@ -203,8 +203,9 @@ in
       package = mkPackageOption pkgs "mediawiki" { };
 
       # https://www.mediawiki.org/wiki/Compatibility
-      phpPackage = mkPackageOption pkgs "php" {
-        default = "php81";
+      phpPackage = (mkPackageOption pkgs "php" { }) // {
+        default = if versionAtLeast config.services.mediawiki.package.version "1.42.0" then pkgs.php82 else pkgs.php81;
+        defaultText = literalExpression ''if versionAtLeast config.services.mediawiki.package.version "1.42.0" then pkgs.php82 else pkgs.php81'';
       };
 
       finalPackage = mkOption {
